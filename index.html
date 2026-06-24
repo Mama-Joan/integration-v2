@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce-Based Gong Integration · Full Reference</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f1117;--surface:#181c27;--surface2:#1e2333;--border:#2a2f45;
+  --text:#e2e8f0;--muted:#7c85a2;
+  --teal:#2dd4bf;--teal-dim:rgba(45,212,191,0.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12);
+  --amber:#fbbf24;--amber-dim:rgba(251,191,36,0.10);
+  --red:#f87171;--red-dim:rgba(248,113,113,0.10);
+  --green:#4ade80;--green-dim:rgba(74,222,128,0.10);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,0.10);
+  --coral:#fb923c;--coral-dim:rgba(251,146,60,0.10);
+  --radius:10px;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;margin:0;padding:0;}
+
+/* ── Sidebar ── */
+.sidebar{position:fixed;top:0;left:0;width:224px;height:100vh;background:#0a0d14;border-right:1px solid var(--border);overflow-y:auto;padding:20px 0;z-index:100;}
+.sidebar-logo{padding:0 18px 18px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.sidebar-logo h1{font-size:12px;font-weight:600;color:var(--teal);line-height:1.5;}
+.sidebar-logo p{font-size:10px;color:var(--muted);margin-top:2px;}
+.nav-sec{padding:0 12px 3px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:12px 0 3px;}
+.nav-a{display:block;padding:6px 18px;font-size:12px;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.4;}
+.nav-a:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+.nav-a.p1{}.nav-a.p1.active,.nav-a.p1:hover{color:var(--teal);border-left-color:var(--teal);background:var(--teal-dim);}
+.nav-a.p2.active,.nav-a.p2:hover{color:var(--purple);border-left-color:var(--purple);background:var(--purple-dim);}
+.nav-a.ref.active,.nav-a.ref:hover{color:var(--amber);border-left-color:var(--amber);background:var(--amber-dim);}
+
+/* ── Main ── */
+.main{margin-left:224px;}
+.doc-sec{padding:44px 40px 60px;border-bottom:2px solid var(--border);max-width:1060px;}
+.doc-sec:last-child{border-bottom:none;}
+
+/* ── Section banner ── */
+.sec-banner{display:flex;align-items:flex-start;gap:14px;padding:18px 22px;border-radius:var(--radius);margin-bottom:28px;border:1px solid;}
+.sec-banner.teal{background:var(--teal-dim);border-color:rgba(45,212,191,0.25);}
+.sec-banner.purple{background:var(--purple-dim);border-color:rgba(167,139,250,0.25);}
+.sec-banner.amber{background:var(--amber-dim);border-color:rgba(251,191,36,0.2);}
+.sec-banner.blue{background:var(--blue-dim);border-color:rgba(96,165,250,0.2);}
+.sec-num{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
+.teal .sec-num{background:rgba(45,212,191,0.2);color:var(--teal);border:1px solid rgba(45,212,191,0.4);}
+.purple .sec-num{background:rgba(167,139,250,0.2);color:var(--purple);border:1px solid rgba(167,139,250,0.4);}
+.amber .sec-num{background:rgba(251,191,36,0.15);color:var(--amber);border:1px solid rgba(251,191,36,0.3);}
+.blue .sec-num{background:rgba(96,165,250,0.15);color:var(--blue);border:1px solid rgba(96,165,250,0.3);}
+.sec-info h2{font-size:16px;font-weight:600;margin-bottom:3px;}
+.teal .sec-info h2{color:var(--teal);}
+.purple .sec-info h2{color:var(--purple);}
+.amber .sec-info h2{color:var(--amber);}
+.blue .sec-info h2{color:var(--blue);}
+.sec-info p{font-size:12.5px;color:var(--muted);line-height:1.6;max-width:680px;}
+
+/* ── Section label ── */
+.sl{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:28px 0 14px;display:flex;align-items:center;gap:10px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── Step card ── */
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;}
+.sc-hd{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2);}
+.sn{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.sn-teal{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(45,212,191,0.4);}
+.sn-purple{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(167,139,250,0.4);}
+.sn-amber{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(251,191,36,0.3);}
+.sn-blue{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,165,250,0.3);}
+.sn-gray{background:rgba(124,133,162,0.15);color:var(--muted);}
+.st{font-size:13px;font-weight:600;color:var(--text);flex:1;}
+.ss{font-size:11px;color:var(--muted);}
+.tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;letter-spacing:0.04em;text-transform:uppercase;flex-shrink:0;}
+.tag-sf{background:var(--blue-dim);color:var(--blue);}
+.tag-gong{background:var(--purple-dim);color:var(--purple);}
+.tag-gen{background:var(--teal-dim);color:var(--teal);}
+.tag-apex{background:var(--amber-dim);color:var(--amber);}
+.tag-wh{background:var(--coral-dim);color:var(--coral);}
+.sb{padding:16px 18px;}
+.sb p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px;}
+.sb p:last-child{margin-bottom:0;}
+.sb p strong{color:var(--text);font-weight:600;}
+
+/* ── Callout ── */
+.cl{padding:10px 14px;border-radius:6px;border-left:3px solid;font-size:12.5px;line-height:1.6;margin-bottom:12px;}
+.cl.warn{background:var(--amber-dim);border-color:var(--amber);color:#fcd34d;}
+.cl.tip{background:var(--green-dim);border-color:var(--green);color:#86efac;}
+.cl.info{background:var(--blue-dim);border-color:var(--blue);color:#93c5fd;}
+.cl.alert{background:var(--red-dim);border-color:var(--red);color:#fca5a5;}
+.cl strong{font-weight:600;}
+
+/* ── Code block ── */
+.cb{background:#0a0d14;border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.75;overflow-x:auto;position:relative;margin:10px 0;}
+.cpb{position:absolute;top:8px;right:8px;font-size:10px;font-weight:600;font-family:'Inter',sans-serif;padding:2px 8px;border-radius:4px;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--muted);cursor:pointer;}
+.cpb:hover{color:var(--text);background:rgba(255,255,255,0.1);}
+.cpb.copied{color:var(--green);background:var(--green-dim);border-color:var(--green);}
+.tk{color:#c084fc;}.tv{color:#86efac;}.tc{color:#475569;font-style:italic;}
+.tkey{color:#7dd3fc;}.tn{color:#fbbf24;}.tf{color:#67e8f9;}
+
+/* ── Flow diagram (horizontal) ── */
+.flow-diagram{background:#0a0d14;border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;margin:12px 0;}
+.flow-row{display:flex;align-items:flex-start;gap:0;flex-wrap:nowrap;min-width:max-content;}
+.fn{padding:10px 13px;border-radius:8px;border:1px solid;font-size:11.5px;font-weight:600;text-align:center;min-width:130px;white-space:nowrap;}
+.fn-sub{font-size:10px;font-weight:400;color:var(--muted);display:block;margin-top:2px;}
+.fn-teal{background:var(--teal-dim);border-color:rgba(45,212,191,0.3);color:var(--teal);}
+.fn-amber{background:var(--amber-dim);border-color:rgba(251,191,36,0.25);color:var(--amber);}
+.fn-blue{background:var(--blue-dim);border-color:rgba(96,165,250,0.25);color:var(--blue);}
+.fn-purple{background:var(--purple-dim);border-color:rgba(167,139,250,0.3);color:var(--purple);}
+.fn-gray{background:rgba(124,133,162,0.1);border-color:rgba(124,133,162,0.2);color:var(--muted);}
+.fn-green{background:var(--green-dim);border-color:rgba(74,222,128,0.25);color:var(--green);}
+.fn-coral{background:var(--coral-dim);border-color:rgba(251,146,60,0.25);color:var(--coral);}
+.fa{color:var(--muted);font-size:18px;padding:0 6px;flex-shrink:0;align-self:center;}
+.flow-label{font-size:10px;color:var(--muted);text-align:center;margin-top:4px;}
+
+/* ── Table ── */
+.dt{width:100%;border-collapse:collapse;font-size:12.5px;}
+.dt th{padding:8px 14px;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);background:var(--surface2);border-bottom:1px solid var(--border);}
+.dt td{padding:9px 14px;border-bottom:1px solid rgba(42,47,69,0.5);vertical-align:top;}
+.dt tr:last-child td{border-bottom:none;}
+.dt tr:hover td{background:rgba(255,255,255,0.02);}
+.fm{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#7dd3fc;}
+.fv{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:#86efac;}
+.fd{font-size:12px;color:var(--muted);}
+.badge-new{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:var(--purple-dim);color:var(--purple);text-transform:uppercase;}
+.badge-req{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:var(--red-dim);color:var(--red);text-transform:uppercase;}
+.badge-ok{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;background:var(--green-dim);color:var(--green);text-transform:uppercase;}
+
+/* ── Case grid ── */
+.case-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:12px 0;}
+.case-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+.case-card h4{font-size:12px;font-weight:600;margin-bottom:6px;}
+.case-card.a h4{color:var(--green);}
+.case-card.b h4{color:var(--amber);}
+.case-card.c h4{color:var(--coral);}
+.case-card p{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ── Webhook payload highlight ── */
+.wp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0;}
+.wp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;}
+.wp-card h4{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.wp-row{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;font-size:12px;gap:8px;}
+.wp-field{font-family:'JetBrains Mono',monospace;color:#7dd3fc;font-size:11px;}
+.wp-dest{color:var(--muted);font-size:11px;text-align:right;}
+
+code{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px;color:#7dd3fc;}
+
+@media(max-width:900px){.sidebar{display:none;}.main{margin-left:0;}.doc-sec{padding:28px 18px 44px;}.case-grid,.wp-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Salesforce-Based Gong Integration</h1>
+    <p>Full reference · POC approach</p>
+  </div>
+  <div class="nav-sec">Overview</div>
+  <a class="nav-a p1" href="#overview">Architecture overview</a>
+  <a class="nav-a ref" href="#fields">Required Salesforce fields</a>
+  <div class="nav-sec">Phase 1 — Upload to Gong</div>
+  <a class="nav-a p1" href="#p1-flow">Flow diagram</a>
+  <a class="nav-a p1" href="#p1-s1">Step 1 · Genesys call data</a>
+  <a class="nav-a p1" href="#p1-s2">Step 2 · Task lookup (SOQL)</a>
+  <a class="nav-a p1" href="#p1-s3">Step 3 · User ID mapping</a>
+  <a class="nav-a p1" href="#p1-s4">Step 4 · Build Gong payload</a>
+  <a class="nav-a p1" href="#p1-s5">Step 5 · Upload to Gong</a>
+  <div class="nav-sec">Phase 2 — Webhook write-back</div>
+  <a class="nav-a p2" href="#p2-overview">Phase 2 · Webhook overview</a>
+  <a class="nav-a p2" href="#p2-flow">Flow diagram</a>
+  <a class="nav-a p2" href="#p2-setup">Gong webhook setup</a>
+  <a class="nav-a p2" href="#p2-endpoint">Salesforce endpoint</a>
+  <a class="nav-a p2" href="#p2-apex">Apex handler code</a>
+  <a class="nav-a p2" href="#p2-payload">Webhook payload map</a>
+  <div class="nav-sec">Reference</div>
+  <a class="nav-a ref" href="#limits">Governor limits</a>
+  <a class="nav-a ref" href="#checklist">POC checklist</a>
+</nav>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ════ SECTION: OVERVIEW ════ -->
+<div class="doc-sec" id="overview">
+  <div class="sec-banner teal">
+    <div class="sec-num">1</div>
+    <div class="sec-info">
+      <h2>Architecture overview — Salesforce as the integration hub</h2>
+      <p>Phase 1 uses Scheduled Apex to call Genesys, resolve lookups, and upload calls to Gong. Phase 2 receives Gong's analysis via webhook and writes results back to the Salesforce Task natively. The <code>clientUniqueId</code> is the single key tying all three systems together.</p>
+    </div>
+  </div>
+
+
+
+  <div class="sl">End-to-end flow</div>
+  <div class="flow-diagram">
+    <div class="flow-row">
+      <div><div class="fn fn-teal">Genesys<span class="fn-sub">call records + audio</span></div><div class="flow-label">Source</div></div>
+      <div class="fa">→</div>
+      <div><div class="fn fn-amber">Scheduled Apex<span class="fn-sub">Phase 1 · hourly</span></div><div class="flow-label">SF orchestrates</div></div>
+      <div class="fa">→</div>
+      <div><div class="fn fn-blue">SOQL + SF User<span class="fn-sub">Task + user ID lookup</span></div><div class="flow-label">Internal SF</div></div>
+      <div class="fa">→</div>
+      <div><div class="fn fn-purple">Gong Calls API<span class="fn-sub">POST /v2/calls</span></div><div class="flow-label">Upload call</div></div>
+    </div>
+    <div style="text-align:center;margin:10px 0 6px;font-size:10px;color:var(--muted)">— Gong analyses call (1–4 hrs) —</div>
+    <div class="flow-row">
+      <div><div class="fn fn-purple">Gong Automation Rule<span class="fn-sub">fires webhook on analysis complete</span></div><div class="flow-label">Push trigger</div></div>
+      <div class="fa">→</div>
+      <div><div class="fn fn-coral">SF Site endpoint<span class="fn-sub">receives webhook POST</span></div><div class="flow-label">Public URL</div></div>
+      <div class="fa">→</div>
+      <div><div class="fn fn-amber">Apex handler<span class="fn-sub">parse payload · SOQL</span></div><div class="flow-label">Phase 2</div></div>
+      <div class="fa">→</div>
+      <div><div class="fn fn-blue">DML update<span class="fn-sub">Task enriched natively</span></div><div class="flow-label">No REST API</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SECTION: FIELDS ════ -->
+<div class="doc-sec" id="fields">
+  <div class="sec-banner amber">
+    <div class="sec-num">2</div>
+    <div class="sec-info">
+      <h2>Required Salesforce custom fields — one-time admin setup</h2>
+      <p>Two objects need custom fields before any Apex code runs. All fields ending in <code>__c</code> are custom — they don't exist by default and must be created in Setup → Object Manager → [Object] → Fields & Relationships → New.</p>
+    </div>
+  </div>
+
+  <div class="sl">User object — agent identity mapping</div>
+  <div class="cl info">These fields store the resolved mapping between Genesys and Gong per agent. Once mapped, no external API calls are needed for that agent on subsequent runs.</div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;margin-bottom:20px;">
+    <table class="dt">
+      <thead><tr><th>Field API name</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="fm">Genesys_User_Id__c <span class="badge-new">new</span></td><td class="fv">Text(255)</td><td class="fd">Genesys agent UUID — e.g. <code>093e832f-aa05-46af-93b5-6d8afa648d67</code></td></tr>
+        <tr><td class="fm">Gong_Numeric_Id__c <span class="badge-new">new</span></td><td class="fv">Text(50)</td><td class="fd">Gong's numeric user ID — store as Text not Number</td></tr>
+        <tr><td class="fm">Gong_Mapping_Status__c <span class="badge-new">new</span></td><td class="fv">Picklist</td><td class="fd">Values: Mapped · Pending · Error</td></tr>
+        <tr><td class="fm">Gong_Mapped_At__c <span class="badge-new">new</span></td><td class="fv">DateTime</td><td class="fd">Timestamp of last successful mapping</td></tr>
+        <tr><td class="fm">Gong_Mapping_Error__c <span class="badge-new">new</span></td><td class="fv">Long Text Area</td><td class="fd">Reason for mapping failure — for debugging</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sl">Task (Activity) object — Gong analysis fields</div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;">
+    <table class="dt">
+      <thead><tr><th>Field API name</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="fm">clientUniqueId__c <span class="badge-req">pre-existing</span></td><td class="fv">Text(255)</td><td class="fd">The key linking Genesys call ↔ Gong call ↔ SF Task — do not modify</td></tr>
+        <tr><td class="fm">GongCallId__c <span class="badge-new">new</span></td><td class="fv">Text(50)</td><td class="fd">Gong's internal call ID returned after upload</td></tr>
+        <tr><td class="fm">GongCallUrl__c <span class="badge-new">new</span></td><td class="fv">URL</td><td class="fd">Direct link to the call in Gong UI</td></tr>
+        <tr><td class="fm">GongCallSummary__c <span class="badge-new">new</span></td><td class="fv">Long Text Area</td><td class="fd">AI-generated call summary — use Long Text Area for capacity</td></tr>
+        <tr><td class="fm">GongTalkRatio__c <span class="badge-new">new</span></td><td class="fv">Text or Number</td><td class="fd">Agent talk ratio from Gong's <code>interactionStats</code></td></tr>
+        <tr><td class="fm">GongTopics__c <span class="badge-new">new</span></td><td class="fv">Long Text Area</td><td class="fd">Comma-joined call topics from Gong analysis</td></tr>
+        <tr><td class="fm">GongAnalysisSyncStatus__c <span class="badge-new">new</span></td><td class="fv">Picklist</td><td class="fd">Values: Pending · Synced · Error</td></tr>
+        <tr><td class="fm">GongAnalysisSyncedAt__c <span class="badge-new">new</span></td><td class="fv">DateTime</td><td class="fd">Timestamp of last successful sync from Gong</td></tr>
+        <tr><td class="fm">GongAnalysisSyncError__c <span class="badge-new">new</span></td><td class="fv">Long Text Area</td><td class="fd">Reason for sync failure — for debugging</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════ SECTION: PHASE 1 FLOW ════ -->
+<div class="doc-sec" id="p1-flow">
+  <div class="sec-banner teal">
+    <div class="sec-num">3</div>
+    <div class="sec-info">
+      <h2>Phase 1 · Salesforce Apex flow diagram</h2>
+      <p>Scheduled Apex runs hourly. Salesforce calls Genesys, queries its own database, resolves agent identity, builds the Gong payload, and uploads the call.</p>
+    </div>
+  </div>
+
+  <div class="flow-diagram">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Scheduled Apex · runs hourly · one transaction per call record</div>
+    <div class="flow-row" style="gap:4px">
+      <div>
+        <div class="fn fn-amber" style="min-width:110px">Scheduled Apex<span class="fn-sub">Phase1UploadJob</span></div>
+        <div class="flow-label">Trigger</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-teal" style="min-width:120px">Genesys Analytics<span class="fn-sub">POST /details/query</span></div>
+        <div class="flow-label">Step 1a</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-teal" style="min-width:120px">Genesys Recordings<span class="fn-sub">GET /recordings</span></div>
+        <div class="flow-label">Step 1b</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-blue" style="min-width:120px">SOQL Task lookup<span class="fn-sub">WHERE clientUniqueId__c</span></div>
+        <div class="flow-label">Step 2</div>
+      </div>
+    </div>
+    <div style="margin:8px 0 4px;font-size:10px;color:var(--muted);padding-left:4px">continues →</div>
+    <div class="flow-row" style="gap:4px">
+      <div>
+        <div class="fn fn-blue" style="min-width:120px">User ID lookup<span class="fn-sub">SF User record</span></div>
+        <div class="flow-label">Step 3 · Case A</div>
+      </div>
+      <div class="fa" style="color:var(--amber)">or</div>
+      <div>
+        <div class="fn fn-teal" style="min-width:120px">Genesys Users API<span class="fn-sub">→ email → Gong</span></div>
+        <div class="flow-label">Step 3 · Case B/C</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-amber" style="min-width:130px">Build Gong payload<span class="fn-sub">all fields assembled</span></div>
+        <div class="flow-label">Step 4</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-purple" style="min-width:120px">POST /v2/calls<span class="fn-sub">returns callId</span></div>
+        <div class="flow-label">Step 5</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-blue" style="min-width:120px">DML update Task<span class="fn-sub">store GongCallId__c</span></div>
+        <div class="flow-label">Step 5b</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ STEP 1 ════ -->
+<div class="doc-sec" id="p1-s1">
+  <div class="sl">Phase 1 · Step 1 — Salesforce calls Genesys to retrieve call data</div>
+  <div class="sc">
+    <div class="sc-hd">
+      <div class="sn sn-teal">1</div>
+      <div><div class="st">Scheduled Apex calls Genesys Analytics API and Recordings API</div><div class="ss">Named Credential: Genesys · Apex Callout</div></div>
+      <span class="tag tag-gen">Genesys API</span>
+    </div>
+    <div class="sb">
+      <p>The Scheduled Apex job calls the Genesys Analytics API to fetch completed voice calls in the last time window, then calls the Recordings API per call to get the audio file URL.</p>
+      <div class="cb">
+        <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// Phase1UploadJob.apex — Scheduled Apex entry point</span>
+<span class="tk">global class</span> <span class="tf">Phase1UploadJob</span> <span class="tk">implements</span> Schedulable {
+  <span class="tk">global void</span> <span class="tf">execute</span>(SchedulableContext sc) {
+    <span class="tf">Phase1Processor</span>.run();
+  }
+}
+
+<span class="tk">public class</span> <span class="tf">Phase1Processor</span> {
+  <span class="tk">public static void</span> <span class="tf">run</span>() {
+    <span class="tc">// Step 1a: call Genesys Analytics API</span>
+    String genesysToken = <span class="tf">GenesysAuth</span>.getToken();
+    String interval = <span class="tf">buildInterval</span>();  <span class="tc">// last 1 hour ISO window</span>
+    String body = <span class="tv">'{"interval":"'</span> + interval + <span class="tv">'","order":"asc","orderBy":"conversationStart",'</span>
+      + <span class="tv">'"paging":{"pageSize":20,"pageNumber":1},'</span>
+      + <span class="tv">'"segmentFilters":[{"type":"and","predicates":[{"type":"dimension",'</span>
+      + <span class="tv">'"dimension":"mediaType","operator":"matches","value":"voice"}]}]}'</span>;
+
+    HttpRequest req = <span class="tk">new</span> HttpRequest();
+    req.setEndpoint(<span class="tv">'callout:Genesys_NC/api/v2/analytics/conversations/details/query'</span>);
+    req.setMethod(<span class="tv">'POST'</span>);
+    req.setHeader(<span class="tv">'Content-Type'</span>, <span class="tv">'application/json'</span>);
+    req.setHeader(<span class="tv">'Authorization'</span>, <span class="tv">'Bearer '</span> + genesysToken);
+    req.setBody(body);
+
+    HttpResponse res = <span class="tk">new</span> Http().send(req);
+    Map&lt;String,Object&gt; parsed = (Map&lt;String,Object&gt;) JSON.deserializeUntyped(res.getBody());
+    List&lt;Object&gt; conversations = (List&lt;Object&gt;) parsed.get(<span class="tv">'conversations'</span>);
+
+    <span class="tk">for</span> (Object c : conversations) {
+      Map&lt;String,Object&gt; conv = (Map&lt;String,Object&gt;) c;
+      <span class="tf">processConversation</span>(conv, genesysToken);
+    }
+  }
+}
+      </div>
+      <div class="cl info"><strong>Named Credential:</strong> <code>Genesys_NC</code> must be configured in Salesforce Setup → Named Credentials with the Genesys OAuth 2.0 client credentials. The callout URL then becomes <code>callout:Genesys_NC/api/v2/...</code> — no hardcoded URLs or tokens in Apex.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ STEP 2 ════ -->
+<div class="doc-sec" id="p1-s2">
+  <div class="sl">Phase 1 · Step 2 — SOQL Task lookup via clientUniqueId</div>
+  <div class="sc">
+    <div class="sc-hd">
+      <div class="sn sn-blue">2</div>
+      <div><div class="st">SOQL query on Task object → follow WhoId chain to Account + Opportunity</div><div class="ss">Internal Salesforce · no API call needed</div></div>
+      <span class="tag tag-sf">SOQL</span>
+    </div>
+    <div class="sb">
+      <p>Using the <code>clientUniqueId</code> from the Genesys call, Salesforce queries its own Task table directly. No REST API required — this is a native SOQL query inside the same Apex transaction.</p>
+      <div class="cb">
+        <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// Step 2: find Task by clientUniqueId, follow chain to Account + Opportunity</span>
+String clientUniqueId = <span class="tv">'3b10d6d6-13be-abcd'</span>; <span class="tc">// from Genesys participant attributes</span>
+
+List&lt;Task&gt; tasks = [
+  SELECT Id, WhoId, Who.AccountId
+  FROM Task
+  WHERE clientUniqueId__c = :clientUniqueId
+  LIMIT 1
+];
+
+<span class="tk">if</span> (tasks.isEmpty()) {
+  <span class="tc">// No matching Task — log and skip this call</span>
+  <span class="tf">logError</span>(clientUniqueId, <span class="tv">'No Task found for clientUniqueId'</span>);
+  <span class="tk">return</span>;
+}
+
+Task t = tasks[<span class="tn">0</span>];
+Id contactId = t.WhoId;           <span class="tc">// e.g. 003XXX</span>
+Id taskId    = t.Id;              <span class="tc">// e.g. 00TAAA — stored for Phase 2</span>
+
+<span class="tc">// Follow chain: Contact → Account → open Opportunity</span>
+List&lt;Contact&gt; contacts = [
+  SELECT Id, AccountId, Account.Name,
+    (SELECT Id, Name, StageName FROM Opportunities
+     WHERE IsClosed = false ORDER BY LastModifiedDate DESC LIMIT 1)
+  FROM Contact WHERE Id = :contactId LIMIT 1
+];
+
+Contact con = contacts[<span class="tn">0</span>];
+Id accountId     = con.AccountId;
+Id opportunityId = con.Opportunities.isEmpty() ? null : con.Opportunities[<span class="tn">0</span>].Id;
+
+<span class="tc">// These IDs go into the Gong context block in Step 4</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ STEP 3 ════ -->
+<div class="doc-sec" id="p1-s3">
+  <div class="sl">Phase 1 · Step 3 — Resolve Genesys User ID to Gong Numeric ID</div>
+  <div class="cl info"><strong>How mapping works:</strong> Salesforce uses the User object as the mapping store. Once an agent's Gong Numeric ID is resolved and saved, it is reused on all future calls — no repeated API calls for already-mapped agents.</div>
+
+  <div class="case-grid">
+    <div class="case-card a">
+      <h4>Case A — Already mapped</h4>
+      <p>Salesforce User has both <code>Genesys_User_Id__c</code> and <code>Gong_Numeric_Id__c</code> populated. Use the Gong ID directly. Zero external API calls.</p>
+    </div>
+    <div class="case-card b">
+      <h4>Case B — Genesys ID on User, no Gong ID</h4>
+      <p>User has <code>Genesys_User_Id__c</code> set but <code>Gong_Numeric_Id__c</code> is blank. Use the User's standard Email to query Gong <code>GET /v2/users</code>, save the result to the User record.</p>
+    </div>
+    <div class="case-card c">
+      <h4>Case C — No mapping at all</h4>
+      <p>Genesys User ID not yet on any Salesforce User. Call Genesys <code>GET /api/v2/users/{id}</code> to get email → match to SF User → call Gong to get Numeric ID → save both to User record.</p>
+    </div>
+  </div>
+
+  <div class="sc" style="margin-top:12px">
+    <div class="sc-hd">
+      <div class="sn sn-blue">3</div>
+      <div><div class="st">Apex — resolveGongUserId() with three-case logic</div><div class="ss">SF User object as persistent mapping store</div></div>
+      <span class="tag tag-apex">Apex</span>
+    </div>
+    <div class="sb">
+      <div class="cb">
+        <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// Step 3: resolve Genesys userId → Gong Numeric Id
+// Uses SF User record as the mapping store — avoids repeated API calls</span>
+
+<span class="tk">public static</span> String <span class="tf">resolveGongUserId</span>(String genesysUserId, String genesysToken) {
+
+  <span class="tc">// Case A: check if SF User already has both IDs mapped</span>
+  List&lt;User&gt; users = [
+    SELECT Id, Email, Gong_Numeric_Id__c, Gong_Mapping_Status__c
+    FROM User
+    WHERE Genesys_User_Id__c = :genesysUserId
+    LIMIT 1
+  ];
+
+  <span class="tk">if</span> (!users.isEmpty() &amp;&amp; users[<span class="tn">0</span>].Gong_Numeric_Id__c != null) {
+    <span class="tc">// Case A: already mapped — return immediately</span>
+    <span class="tk">return</span> users[<span class="tn">0</span>].Gong_Numeric_Id__c;
+  }
+
+  String agentEmail;
+  User sfUser;
+
+  <span class="tk">if</span> (!users.isEmpty()) {
+    <span class="tc">// Case B: SF User found by Genesys ID but no Gong ID yet — use their email</span>
+    sfUser     = users[<span class="tn">0</span>];
+    agentEmail = sfUser.Email;
+  } <span class="tk">else</span> {
+    <span class="tc">// Case C: no SF User mapped — call Genesys Users API to get email</span>
+    HttpRequest req = <span class="tk">new</span> HttpRequest();
+    req.setEndpoint(<span class="tv">'callout:Genesys_NC/api/v2/users/'</span> + genesysUserId);
+    req.setMethod(<span class="tv">'GET'</span>);
+    req.setHeader(<span class="tv">'Authorization'</span>, <span class="tv">'Bearer '</span> + genesysToken);
+    HttpResponse res = <span class="tk">new</span> Http().send(req);
+    Map&lt;String,Object&gt; genUser = (Map&lt;String,Object&gt;) JSON.deserializeUntyped(res.getBody());
+    agentEmail = (String) genUser.get(<span class="tv">'email'</span>);
+
+    <span class="tc">// Find the matching SF User by email and write the Genesys ID</span>
+    List&lt;User&gt; matched = [SELECT Id, Email FROM User WHERE Email = :agentEmail LIMIT 1];
+    <span class="tk">if</span> (matched.isEmpty()) { <span class="tk">return</span> null; } <span class="tc">// no SF User — cannot proceed</span>
+    sfUser = matched[<span class="tn">0</span>];
+    sfUser.Genesys_User_Id__c = genesysUserId;
+  }
+
+  <span class="tc">// Case B + C: query Gong /v2/users to find numeric ID by email</span>
+  String gongId = <span class="tf">lookupGongIdByEmail</span>(agentEmail);
+  <span class="tk">if</span> (gongId == null) {
+    sfUser.Gong_Mapping_Status__c = <span class="tv">'Error'</span>;
+    sfUser.Gong_Mapping_Error__c  = <span class="tv">'No Gong user found for email: '</span> + agentEmail;
+  } <span class="tk">else</span> {
+    sfUser.Gong_Numeric_Id__c     = gongId;
+    sfUser.Gong_Mapping_Status__c = <span class="tv">'Mapped'</span>;
+    sfUser.Gong_Mapped_At__c      = Datetime.now();
+  }
+  update sfUser; <span class="tc">// persist mapping for future calls</span>
+  <span class="tk">return</span> gongId;
+}
+
+<span class="tc">// Helper: call Gong GET /v2/users and match by email</span>
+<span class="tk">private static</span> String <span class="tf">lookupGongIdByEmail</span>(String email) {
+  HttpRequest req = <span class="tk">new</span> HttpRequest();
+  req.setEndpoint(<span class="tv">'callout:Gong_NC/v2/users'</span>);
+  req.setMethod(<span class="tv">'GET'</span>);
+  HttpResponse res = <span class="tk">new</span> Http().send(req);
+  Map&lt;String,Object&gt; data = (Map&lt;String,Object&gt;) JSON.deserializeUntyped(res.getBody());
+  List&lt;Object&gt; users = (List&lt;Object&gt;) data.get(<span class="tv">'users'</span>);
+  <span class="tk">for</span> (Object u : users) {
+    Map&lt;String,Object&gt; user = (Map&lt;String,Object&gt;) u;
+    <span class="tk">if</span> (email.equalsIgnoreCase((String) user.get(<span class="tv">'emailAddress'</span>)))
+      <span class="tk">return</span> (String) user.get(<span class="tv">'id'</span>);
+  }
+  <span class="tk">return</span> null;
+}
+      </div>
+      <div class="cl tip" style="margin-top:0"><strong>Why this is better:</strong> After the first time an agent is mapped (Case B or C), every subsequent call for that agent hits Case A — zero external API calls. The Salesforce User record becomes the authoritative mapping store. If an agent's Gong account changes, update <code>Gong_Numeric_Id__c</code> on their SF User record directly.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ STEP 4 ════ -->
+<div class="doc-sec" id="p1-s4">
+  <div class="sl">Phase 1 · Step 4 — Build the Gong Calls API payload</div>
+  <div class="sc">
+    <div class="sc-hd">
+      <div class="sn sn-purple">4</div>
+      <div><div class="st">Assemble payload from Genesys data + Salesforce lookups</div><div class="ss">All values resolved in Steps 1–3</div></div>
+      <span class="tag tag-apex">Apex</span>
+    </div>
+    <div class="sb">
+      <div class="cb">
+        <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// Step 4: build the Gong Calls API payload</span>
+Map&lt;String,Object&gt; payload = <span class="tk">new</span> Map&lt;String,Object&gt; {
+  <span class="tv">'clientUniqueId'</span>    =&gt; conversationId,        <span class="tc">// Genesys conversationId</span>
+  <span class="tv">'actualStart'</span>       =&gt; conversationStart,      <span class="tc">// ISO 8601</span>
+  <span class="tv">'direction'</span>         =&gt; <span class="tf">mapDirection</span>(originatingDirection), <span class="tc">// 'Inbound'/'Outbound'</span>
+  <span class="tv">'primaryUser'</span>       =&gt; gongNumericId,           <span class="tc">// resolved in Step 3</span>
+  <span class="tv">'downloadMediaUrl'</span>  =&gt; recordingUrl,            <span class="tc">// from Genesys Recordings API</span>
+  <span class="tv">'parties'</span>           =&gt; buildParties(participants, gongNumericId),
+  <span class="tv">'context'</span>           =&gt; buildContext(accountId, opportunityId)
+  <span class="tc">// No phone number · no email address — PII excluded per policy</span>
+};
+
+<span class="tc">// Context block — forces Gong to associate call with SF Account + Opportunity</span>
+<span class="tk">private static</span> List&lt;Object&gt; <span class="tf">buildContext</span>(Id accountId, Id opportunityId) {
+  List&lt;Map&lt;String,Object&gt;&gt; objects = <span class="tk">new</span> List&lt;Map&lt;String,Object&gt;&gt;();
+  <span class="tk">if</span> (opportunityId != null)
+    objects.add(<span class="tk">new</span> Map&lt;String,Object&gt;{<span class="tv">'objectType'</span>=&gt;<span class="tv">'Opportunity'</span>,<span class="tv">'objectId'</span>=&gt;String.valueOf(opportunityId)});
+  <span class="tk">if</span> (accountId != null)
+    objects.add(<span class="tk">new</span> Map&lt;String,Object&gt;{<span class="tv">'objectType'</span>=&gt;<span class="tv">'Account'</span>,<span class="tv">'objectId'</span>=&gt;String.valueOf(accountId)});
+  <span class="tk">return new</span> List&lt;Object&gt;{<span class="tk">new</span> Map&lt;String,Object&gt;{<span class="tv">'system'</span>=&gt;<span class="tv">'Salesforce'</span>,<span class="tv">'objects'</span>=&gt;objects}};
+}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ STEP 5 ════ -->
+<div class="doc-sec" id="p1-s5">
+  <div class="sl">Phase 1 · Step 5 — Upload to Gong and store returned callId</div>
+  <div class="sc">
+    <div class="sc-hd">
+      <div class="sn sn-purple">5</div>
+      <div><div class="st">POST to Gong Calls API · store GongCallId__c on Task via DML</div><div class="ss">Named Credential: Gong_NC</div></div>
+      <span class="tag tag-gong">Gong API</span>
+    </div>
+    <div class="sb">
+      <div class="cb">
+        <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// Step 5: POST to Gong and store the returned callId on the Task record</span>
+HttpRequest req = <span class="tk">new</span> HttpRequest();
+req.setEndpoint(<span class="tv">'callout:Gong_NC/v2/calls'</span>);
+req.setMethod(<span class="tv">'POST'</span>);
+req.setHeader(<span class="tv">'Content-Type'</span>, <span class="tv">'application/json'</span>);
+req.setBody(JSON.serialize(payload));
+
+HttpResponse res = <span class="tk">new</span> Http().send(req);
+
+<span class="tk">if</span> (res.getStatusCode() == <span class="tn">200</span>) {
+  Map&lt;String,Object&gt; result = (Map&lt;String,Object&gt;) JSON.deserializeUntyped(res.getBody());
+  String gongCallId = (String) result.get(<span class="tv">'callId'</span>);
+
+  <span class="tc">// Store GongCallId__c on the Task — this is what Phase 2 webhook uses</span>
+  Task t = <span class="tk">new</span> Task(Id = taskId, GongCallId__c = gongCallId);
+  update t;
+} <span class="tk">else</span> {
+  <span class="tc">// Log error — do not throw, allow other calls in batch to continue</span>
+  <span class="tf">logError</span>(conversationId, <span class="tv">'Gong upload failed: '</span> + res.getBody());
+}
+      </div>
+      <div class="cl tip"><strong>Why store GongCallId__c on the Task:</strong> When Gong fires the Phase 2 webhook, it sends the <code>metaData.id</code> (Gong call ID) and the <code>clientUniqueId</code>. Both values are stored on the Task — Salesforce can match the incoming webhook to the right Task using either. The <code>clientUniqueId</code> is the primary key since it was set at call creation time.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SECTION: PHASE 2 OVERVIEW ════ -->
+<div class="doc-sec" id="p2-overview">
+  <div class="sec-banner purple">
+    <div class="sec-num">4</div>
+    <div class="sec-info">
+      <h2>Phase 2 · Gong webhook triggers Salesforce write-back</h2>
+      <p>When Gong finishes analysing a call, an Automation Rule fires a webhook to a Salesforce public endpoint. The payload contains all needed analysis fields. Salesforce receives it, matches the Task via <code>clientUniqueId</code>, and updates the record natively via Apex DML.</p>
+    </div>
+  </div>
+
+
+
+  <div class="cl info"><strong>What Gong's webhook payload contains:</strong> The webhook fires when an Automation Rule condition is met (e.g. "all processed calls"). The payload includes <code>metaData.id</code>, <code>metaData.url</code>, <code>content.topics[]</code>, <code>interaction.interactionStats[]</code> (including Talk Ratio as a named stat), and the <code>context</code> block with Salesforce object IDs. <strong>Salesforce does not need to make a follow-up call to <code>/v2/calls/extensive</code></strong> — all needed fields arrive in the webhook body.</div>
+</div>
+
+<!-- ════ PHASE 2 FLOW ════ -->
+<div class="doc-sec" id="p2-flow">
+  <div class="sl">Phase 2 · Webhook flow diagram</div>
+  <div class="flow-diagram">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:10px;">Triggered by Gong — no Salesforce polling required</div>
+    <div class="flow-row" style="gap:4px">
+      <div>
+        <div class="fn fn-purple" style="min-width:130px">Gong analysis done<span class="fn-sub">Automation Rule fires</span></div>
+        <div class="flow-label">Gong trigger</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-coral" style="min-width:130px">Webhook POST<span class="fn-sub">to SF Site endpoint</span></div>
+        <div class="flow-label">HTTP push</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-amber" style="min-width:130px">Apex handler<span class="fn-sub">GongWebhookHandler</span></div>
+        <div class="flow-label">Receive + parse</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-blue" style="min-width:130px">SOQL Task match<span class="fn-sub">WHERE clientUniqueId__c</span></div>
+        <div class="flow-label">Find Task</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-green" style="min-width:130px">DML update Task<span class="fn-sub">Gong fields written</span></div>
+        <div class="flow-label">Native update</div>
+      </div>
+      <div class="fa">→</div>
+      <div>
+        <div class="fn fn-coral" style="min-width:80px">HTTP 200<span class="fn-sub">return to Gong</span></div>
+        <div class="flow-label">Acknowledge</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 2 SETUP ════ -->
+<div class="doc-sec" id="p2-setup">
+  <div class="sl">Phase 2 · Gong Automation Rule setup (admin task)</div>
+  <div class="sc">
+    <div class="sc-hd">
+      <div class="sn sn-purple">W1</div>
+      <div><div class="st">Create an Automation Rule in Gong Admin Center</div><div class="ss">Gong Admin Center → Settings → Ecosystem → Automation rules</div></div>
+      <span class="tag tag-wh">Gong webhook</span>
+    </div>
+    <div class="sb">
+      <p>This is a one-time configuration in Gong. No code required — done through the Gong UI by a Gong Technical Admin.</p>
+      <ol style="list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px;">
+        <li style="display:flex;gap:10px;font-size:13px;color:var(--text);">
+          <span style="counter-increment:s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--purple-dim);color:var(--purple);font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">1</span>
+          Go to <strong>Gong Admin Center → Settings → Ecosystem → Automation Rules</strong> → click <strong>+ Add Rule</strong>
+        </li>
+        <li style="display:flex;gap:10px;font-size:13px;color:var(--text);">
+          <span style="counter-increment:s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--purple-dim);color:var(--purple);font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">2</span>
+          <span>Click the filter icon to define which calls trigger the rule. For this integration: <strong>All processed calls</strong> (no additional filters needed — every call uploaded by Phase 1 should trigger Phase 2).</span>
+        </li>
+        <li style="display:flex;gap:10px;font-size:13px;color:var(--text);">
+          <span style="counter-increment:s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--purple-dim);color:var(--purple);font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">3</span>
+          <span>In the <strong>Action</strong> dropdown, <strong>Fire webhook</strong> is selected by default. Set the <strong>Destination URL</strong> to the Salesforce Site endpoint (configured in the next step).</span>
+        </li>
+        <li style="display:flex;gap:10px;font-size:13px;color:var(--text);">
+          <span style="counter-increment:s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--purple-dim);color:var(--purple);font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">4</span>
+          <span>Authentication: select <strong>Signed JWT header</strong>. Copy the public key shown — this is used in the Apex handler to verify the request is genuinely from Gong.</span>
+        </li>
+        <li style="display:flex;gap:10px;font-size:13px;color:var(--text);">
+          <span style="counter-increment:s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--purple-dim);color:var(--purple);font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;">5</span>
+          Click <strong>Test now</strong> to verify Gong can reach the endpoint. Enable the rule once the test succeeds.
+        </li>
+      </ol>
+      <div class="cl warn" style="margin-top:12px"><strong>Destination URL format:</strong> <code>https://[your-sf-site].force.com/services/apexrest/gong/webhook?token=YOUR_SECRET_TOKEN</code>. The token in the URL is a shared secret you define — the Apex handler checks it before processing the payload, as a first layer of authentication on top of JWT verification.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 2 ENDPOINT ════ -->
+<div class="doc-sec" id="p2-endpoint">
+  <div class="sl">Phase 2 · Salesforce public endpoint — Apex REST resource</div>
+  <div class="sc">
+    <div class="sc-hd">
+      <div class="sn sn-purple">W2</div>
+      <div><div class="st">Create an Apex REST class to receive the Gong webhook POST</div><div class="ss">Exposed via Salesforce Site — public URL, no Salesforce login required</div></div>
+      <span class="tag tag-apex">Apex REST</span>
+    </div>
+    <div class="sb">
+      <p>Salesforce exposes a public HTTPS endpoint by creating an <strong>Apex REST Resource</strong> and exposing it through a <strong>Salesforce Site</strong> (or Experience Cloud site). Gong POSTs its webhook payload to this URL — no Salesforce authentication required from Gong's side.</p>
+      <div class="cl info"><strong>Salesforce Site setup:</strong> Setup → Sites → New Site → set the site URL prefix → under Public Access Settings, grant the Guest User permission to access the Apex REST class. The resulting URL will be <code>https://[yourorg].my.site.com/services/apexrest/gong/webhook</code>.</div>
+      <div class="cb">
+        <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// GongWebhookResource.apex — public REST endpoint for Gong webhooks</span>
+<span class="tk">@RestResource</span>(urlMapping=<span class="tv">'/gong/webhook/*'</span>)
+<span class="tk">global class</span> <span class="tf">GongWebhookResource</span> {
+
+  <span class="tk">@HttpPost</span>
+  <span class="tk">global static void</span> <span class="tf">handlePost</span>() {
+    RestRequest  req = RestContext.request;
+    RestResponse res = RestContext.response;
+
+    <span class="tc">// 1. Verify shared token in query param as first-line security check</span>
+    String token = req.params.get(<span class="tv">'token'</span>);
+    <span class="tk">if</span> (token != System.<span class="tf">Label</span>.Gong_Webhook_Token) {
+      res.statusCode = <span class="tn">401</span>;
+      <span class="tk">return</span>;
+    }
+
+    <span class="tc">// 2. Parse the Gong webhook payload</span>
+    String body = req.requestBody.toString();
+    Map&lt;String,Object&gt; payload = (Map&lt;String,Object&gt;) JSON.deserializeUntyped(body);
+
+    <span class="tc">// 3. Hand off to async handler to avoid governor limit issues</span>
+    <span class="tc">// Using @future so the REST response returns immediately to Gong</span>
+    <span class="tf">GongWebhookHandler</span>.processAsync(body);
+
+    <span class="tc">// 4. Respond 200 immediately — Gong will retry if it doesn't get 2xx</span>
+    res.statusCode = <span class="tn">200</span>;
+    res.responseBody = Blob.valueOf(<span class="tv">'{"status":"received"}'</span>);
+  }
+}
+      </div>
+      <div class="cl warn"><strong>Always return 200 immediately.</strong> Gong will retry the webhook if it does not receive a 2xx response quickly. Use <code>@future</code> or a Queueable to do the actual processing asynchronously — respond to Gong first, process after.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 2 APEX HANDLER ════ -->
+<div class="doc-sec" id="p2-apex">
+  <div class="sl">Phase 2 · Apex handler — parse webhook, match Task, DML update</div>
+  <div class="sc">
+    <div class="sc-hd">
+      <div class="sn sn-purple">W3</div>
+      <div><div class="st">GongWebhookHandler — async processing of the Gong payload</div><div class="ss">Runs asynchronously via @future · SOQL + DML</div></div>
+      <span class="tag tag-apex">Apex</span>
+    </div>
+    <div class="sb">
+      <div class="cb">
+        <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// GongWebhookHandler.apex — processes the Gong webhook payload asynchronously</span>
+<span class="tk">public class</span> <span class="tf">GongWebhookHandler</span> {
+
+  <span class="tk">@future</span>
+  <span class="tk">public static void</span> <span class="tf">processAsync</span>(String rawBody) {
+    <span class="tk">try</span> {
+      Map&lt;String,Object&gt; payload  = (Map&lt;String,Object&gt;) JSON.deserializeUntyped(rawBody);
+      Map&lt;String,Object&gt; callData = (Map&lt;String,Object&gt;) payload.get(<span class="tv">'callData'</span>);
+      <span class="tk">if</span> (callData == null) <span class="tk">return</span>; <span class="tc">// safety check</span>
+
+      <span class="tc">// ── Extract fields from webhook payload ──────────────────────────────────
+      // No second API call to /v2/calls/extensive needed —
+      // Gong's webhook payload already contains topics, talk ratio, and call URL</span>
+
+      Map&lt;String,Object&gt; metaData    = (Map&lt;String,Object&gt;) callData.get(<span class="tv">'metaData'</span>);
+      Map&lt;String,Object&gt; content     = (Map&lt;String,Object&gt;) callData.get(<span class="tv">'content'</span>);
+      Map&lt;String,Object&gt; interaction = (Map&lt;String,Object&gt;) callData.get(<span class="tv">'interaction'</span>);
+
+      String gongCallId      = (String)  metaData.get(<span class="tv">'id'</span>);
+      String gongCallUrl     = (String)  metaData.get(<span class="tv">'url'</span>);
+      String clientUniqueId  = (String)  metaData.get(<span class="tv">'clientUniqueId'</span>);
+
+      <span class="tc">// Extract topics as comma-joined string</span>
+      List&lt;Object&gt; topicsList = (List&lt;Object&gt;) content?.get(<span class="tv">'topics'</span>);
+      String topics = <span class="tf">joinTopics</span>(topicsList);
+
+      <span class="tc">// Extract talk ratio from interactionStats — Gong names it "Talk Ratio"</span>
+      List&lt;Object&gt; stats = (List&lt;Object&gt;) interaction?.get(<span class="tv">'interactionStats'</span>);
+      String talkRatio = <span class="tf">extractStat</span>(stats, <span class="tv">'Talk Ratio'</span>);
+
+      <span class="tc">// ── Match the Salesforce Task via clientUniqueId ──────────────────────────
+      // No external storage needed — Task is queryable directly in Salesforce</span>
+      List&lt;Task&gt; tasks = [
+        SELECT Id, GongAnalysisSyncStatus__c
+        FROM Task
+        WHERE clientUniqueId__c = :clientUniqueId
+        LIMIT 1
+      ];
+
+      <span class="tk">if</span> (tasks.isEmpty()) {
+        <span class="tf">logError</span>(gongCallId, <span class="tv">'No Task found for clientUniqueId: '</span> + clientUniqueId);
+        <span class="tk">return</span>;
+      }
+
+      <span class="tc">// ── Prevent duplicate processing ─────────────────────────────────────────</span>
+      <span class="tk">if</span> (<span class="tv">'Synced'</span>.equals(tasks[<span class="tn">0</span>].GongAnalysisSyncStatus__c)) <span class="tk">return</span>;
+
+      <span class="tc">// ── DML update — native Apex, no REST API call to Salesforce ─────────────</span>
+      Task t = <span class="tk">new</span> Task(
+        Id                       = tasks[<span class="tn">0</span>].Id,
+        GongCallId__c            = gongCallId,
+        GongCallUrl__c           = gongCallUrl,
+        GongTopics__c            = topics,
+        GongTalkRatio__c         = talkRatio,
+        GongAnalysisSyncStatus__c = <span class="tv">'Synced'</span>,
+        GongAnalysisSyncedAt__c  = Datetime.now()
+      );
+      update t;
+
+    } <span class="tk">catch</span> (Exception e) {
+      <span class="tf">logError</span>(<span class="tv">'webhook'</span>, e.getMessage());
+    }
+  }
+
+  <span class="tc">// Helper: join topic names from Gong's topics array</span>
+  <span class="tk">private static</span> String <span class="tf">joinTopics</span>(List&lt;Object&gt; topicsList) {
+    <span class="tk">if</span> (topicsList == null) <span class="tk">return</span> <span class="tv">''</span>;
+    List&lt;String&gt; names = <span class="tk">new</span> List&lt;String&gt;();
+    <span class="tk">for</span> (Object t : topicsList) {
+      Map&lt;String,Object&gt; topic = (Map&lt;String,Object&gt;) t;
+      names.add((String) topic.get(<span class="tv">'name'</span>));
+    }
+    <span class="tk">return</span> String.join(names, <span class="tv">', '</span>);
+  }
+
+  <span class="tc">// Helper: extract named stat from interactionStats array</span>
+  <span class="tk">private static</span> String <span class="tf">extractStat</span>(List&lt;Object&gt; stats, String statName) {
+    <span class="tk">if</span> (stats == null) <span class="tk">return</span> null;
+    <span class="tk">for</span> (Object s : stats) {
+      Map&lt;String,Object&gt; stat = (Map&lt;String,Object&gt;) s;
+      <span class="tk">if</span> (statName.equals(stat.get(<span class="tv">'name'</span>)))
+        <span class="tk">return</span> String.valueOf(stat.get(<span class="tv">'value'</span>));
+    }
+    <span class="tk">return</span> null;
+  }
+}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PHASE 2 PAYLOAD MAP ════ -->
+<div class="doc-sec" id="p2-payload">
+  <div class="sl">Phase 2 · Gong webhook payload — what arrives and where it goes</div>
+  <div class="cl tip"><strong>The webhook payload is self-contained.</strong> Gong sends all analysis fields needed for the Task update in the single webhook POST. Salesforce does not need to make any outbound API call in Phase 2 — it only receives, parses, and writes.</div>
+
+  <div class="wp-grid">
+    <div class="wp-card">
+      <h4>Webhook payload fields used</h4>
+      <div class="wp-row"><span class="wp-field">callData.metaData.id</span><span class="wp-dest">→ GongCallId__c</span></div>
+      <div class="wp-row"><span class="wp-field">callData.metaData.url</span><span class="wp-dest">→ GongCallUrl__c</span></div>
+      <div class="wp-row"><span class="wp-field">callData.metaData.clientUniqueId</span><span class="wp-dest">→ Task lookup key</span></div>
+      <div class="wp-row"><span class="wp-field">callData.content.topics[].name</span><span class="wp-dest">→ GongTopics__c</span></div>
+      <div class="wp-row"><span class="wp-field">callData.interaction.interactionStats<br>  where name="Talk Ratio" → .value</span><span class="wp-dest">→ GongTalkRatio__c</span></div>
+      <div class="wp-row"><span class="wp-field">isTest</span><span class="wp-dest">→ skip if true</span></div>
+    </div>
+    <div class="wp-card">
+      <h4>Fields not used from webhook</h4>
+      <div class="wp-row"><span class="wp-field">callData.parties[].emailAddress</span><span class="wp-dest" style="color:var(--red)">excluded — PII</span></div>
+      <div class="wp-row"><span class="wp-field">callData.context</span><span class="wp-dest" style="color:var(--muted)">already set in Phase 1</span></div>
+      <div class="wp-row"><span class="wp-field">callData.collaboration</span><span class="wp-dest" style="color:var(--muted)">out of scope for POC</span></div>
+      <div class="wp-row"><span class="wp-field">callData.content.trackers</span><span class="wp-dest" style="color:var(--muted)">out of scope for POC</span></div>
+      <div class="wp-row"><span class="wp-field">transcript</span><span class="wp-dest" style="color:var(--muted)">excluded — storage overhead</span></div>
+    </div>
+  </div>
+
+  <div class="cb" style="margin-top:12px">
+    <button class="cpb" onclick="cpb(this)">Copy</button>
+<span class="tc">// Sample Gong webhook payload (condensed — fields used in this integration)</span>
+{
+  <span class="tkey">"isTest"</span>: <span class="tk">false</span>,
+  <span class="tkey">"callData"</span>: {
+    <span class="tkey">"metaData"</span>: {
+      <span class="tkey">"id"</span>:             <span class="tv">"5599332235511222779"</span>,   <span class="tc">// → GongCallId__c</span>
+      <span class="tkey">"url"</span>:            <span class="tv">"https://app.gong.io/call?id=5599332235511222779"</span>,  <span class="tc">// → GongCallUrl__c</span>
+      <span class="tkey">"clientUniqueId"</span>: <span class="tv">"3b10d6d6-13be-abcd"</span>,  <span class="tc">// → Task lookup key</span>
+      <span class="tkey">"started"</span>:        <span class="tv">"2024-05-28T09:02:15Z"</span>
+    },
+    <span class="tkey">"content"</span>: {
+      <span class="tkey">"topics"</span>: [
+        { <span class="tkey">"name"</span>: <span class="tv">"Pricing"</span>,       <span class="tkey">"duration"</span>: <span class="tn">120</span> },
+        { <span class="tkey">"name"</span>: <span class="tv">"Next steps"</span>,   <span class="tkey">"duration"</span>: <span class="tn">45</span>  }
+      ]                                          <span class="tc">// → GongTopics__c = "Pricing, Next steps"</span>
+    },
+    <span class="tkey">"interaction"</span>: {
+      <span class="tkey">"interactionStats"</span>: [
+        { <span class="tkey">"name"</span>: <span class="tv">"Talk Ratio"</span>,         <span class="tkey">"value"</span>: <span class="tn">0.51</span> },  <span class="tc">// → GongTalkRatio__c</span>
+        { <span class="tkey">"name"</span>: <span class="tv">"Longest Monologue"</span>,  <span class="tkey">"value"</span>: <span class="tn">150</span>  }   <span class="tc">// not used</span>
+      ]
+    }
+  }
+}
+  </div>
+</div>
+
+<!-- ════ SECTION: LIMITS ════ -->
+<div class="doc-sec" id="limits">
+  <div class="sec-banner amber">
+    <div class="sec-num">5</div>
+    <div class="sec-info">
+      <h2>Governor limits — what to watch for in the POC</h2>
+      <p>Both phases run inside Salesforce transactions. The key limits are callouts per transaction (100 max) and the requirement to keep callouts out of loops. Phase 2 webhook is one callout-free transaction.</p>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;">
+    <table class="dt">
+      <thead><tr><th>Limit</th><th>Value</th><th>Phase 1 impact</th><th>Phase 2 impact</th><th>Safeguard</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="fm">HTTP callouts per transaction</td>
+          <td style="color:var(--amber);font-weight:600">100</td>
+          <td class="fd">~4 callouts per call (Genesys analytics, recordings, Gong users if needed, Gong upload)</td>
+          <td class="fd"><span class="badge-ok">Zero</span> — webhook is inbound, no callouts in handler</td>
+          <td class="fd">Process 20 calls max per Phase 1 Apex run for POC</td>
+        </tr>
+        <tr>
+          <td class="fm">Callout timeout total</td>
+          <td style="color:var(--amber);font-weight:600">120s</td>
+          <td class="fd">4 calls × 3s each = well within limit</td>
+          <td class="fd">N/A</td>
+          <td class="fd">Set individual callout timeout to 20s</td>
+        </tr>
+        <tr>
+          <td class="fm">SOQL queries per transaction</td>
+          <td style="color:var(--green);font-weight:600">100</td>
+          <td class="fd">~3 queries per call (Task, Contact, User)</td>
+          <td class="fd">1 query (Task by clientUniqueId)</td>
+          <td class="fd">No issue for POC volumes</td>
+        </tr>
+        <tr>
+          <td class="fm">DML statements</td>
+          <td style="color:var(--green);font-weight:600">150</td>
+          <td class="fd">1–2 (Task update, User update if remapping)</td>
+          <td class="fd">1 (Task update)</td>
+          <td class="fd">No issue</td>
+        </tr>
+        <tr>
+          <td class="fm">@future callouts</td>
+          <td style="color:var(--amber);font-weight:600">Not allowed</td>
+          <td class="fd">N/A</td>
+          <td class="fd">Phase 2 handler uses @future — <strong>cannot make callouts from @future</strong></td>
+          <td class="fd">Phase 2 webhook handler does NOT need outbound calls — payload is self-contained ✓</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cl warn" style="margin-top:16px"><strong>POC volume cap:</strong> Process a maximum of 5–20 call records per Phase 1 Scheduled Apex run. Filter by a narrow time window and explicitly skip Tasks where <code>GongCallId__c</code> is already populated. For full production scale, Phase 1 needs a Queueable Apex chain pattern to handle bulk volumes.</div>
+</div>
+
+<!-- ════ SECTION: CHECKLIST ════ -->
+<div class="doc-sec" id="checklist">
+  <div class="sec-banner blue">
+    <div class="sec-num">6</div>
+    <div class="sec-info">
+      <h2>POC execution checklist</h2>
+      <p>Complete in this order. Each step is a prerequisite for the next.</p>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;">
+    <table class="dt">
+      <thead><tr><th>#</th><th>Task</th><th>Who</th><th>Validates</th></tr></thead>
+      <tbody>
+        <tr><td class="fm">1</td><td class="fd">Create custom fields on User object (Genesys_User_Id__c, Gong_Numeric_Id__c, etc.)</td><td class="fd">SF Admin</td><td class="fd">User mapping store ready</td></tr>
+        <tr><td class="fm">2</td><td class="fd">Create custom fields on Task object (all GongXxx__c fields)</td><td class="fd">SF Admin</td><td class="fd">Phase 2 write-back fields ready</td></tr>
+        <tr><td class="fm">3</td><td class="fd">Configure Genesys Named Credential in SF Setup</td><td class="fd">SF Admin</td><td class="fd">Phase 1 Genesys API callouts work</td></tr>
+        <tr><td class="fm">4</td><td class="fd">Configure Gong Named Credential in SF Setup</td><td class="fd">SF Admin</td><td class="fd">Phase 1 Gong upload and user lookup work</td></tr>
+        <tr><td class="fm">5</td><td class="fd">Deploy Phase1Processor Apex, test with 1 call</td><td class="fd">Developer</td><td class="fd">Call appears in Gong, Task has GongCallId__c set</td></tr>
+        <tr><td class="fm">6</td><td class="fd">Verify Gong call is associated to correct SF Account + Opportunity</td><td class="fd">Tester</td><td class="fd">Context block working</td></tr>
+        <tr><td class="fm">7</td><td class="fd">Create Salesforce Site, deploy GongWebhookResource Apex, grant Guest User access</td><td class="fd">Developer</td><td class="fd">Public endpoint ready to receive webhook</td></tr>
+        <tr><td class="fm">8</td><td class="fd">Configure Gong Automation Rule — fire webhook to SF Site URL</td><td class="fd">Gong Admin</td><td class="fd">Gong can reach the SF endpoint (test button)</td></tr>
+        <tr><td class="fm">9</td><td class="fd">Wait 1–4 hours after Phase 1 upload — verify webhook fires and Task is updated</td><td class="fd">Tester</td><td class="fd">GongCallSummary__c, GongTopics__c, GongTalkRatio__c populated on Task</td></tr>
+        <tr><td class="fm">10</td><td class="fd">Confirm GongAnalysisSyncStatus__c = 'Synced' and no error fields populated</td><td class="fd">Tester</td><td class="fd">Full end-to-end POC verified</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+const secs = document.querySelectorAll('.doc-sec');
+const navAs = document.querySelectorAll('.nav-a');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navAs.forEach(n => n.classList.remove('active'));
+      const a = document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+secs.forEach(s => io.observe(s));
+
+function cpb(btn) {
+  const block = btn.closest('.cb');
+  const text = block.innerText.replace(/^(Copy|Copied!)\n/, '');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
